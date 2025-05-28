@@ -1,9 +1,10 @@
 import express from 'express'
-import connection from './db/db.js'
-
+import { erroMiddleware } from './middleware/erroMiddleware.js'
+import clienteControllers from './controllers/clienteControllers.js'
 const app = express()
 const PORT=3333
 app.use(express.json())
+app.use(erroMiddleware)
 
 // app.get('/', (req, res) => {
 //     const sql = 'SELECT * FROM cliente'
@@ -14,6 +15,8 @@ app.use(express.json())
 //         res.status(200).json(result)
 //     })
 // })
+
+app.get('/', clienteControllers.getAll)
 
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`)
