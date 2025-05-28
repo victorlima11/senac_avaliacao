@@ -158,6 +158,73 @@ app.get('/clientes/:id', (req, res) => {
   }
 })
 
+app.delete('/clientes/:id', (req, res) => {
+  const {id} = req.params
+  try{
+    const sql = 'DELETE FROM cliente WHERE id = ?'
+    connection.query(sql, [id])
+    res.status(200).json({"Sucesso": "Usuário excluído com sucesso."})
+  }catch(err){
+    res.status(500).json({erro: 'Erro interno no servidor'})
+  }
+})
+
+app.delete('/profissionais/:id', (req, res) => {
+  const {id} = req.params
+  try{
+    const sql = 'DELETE FROM profissional WHERE id = ?'
+    connection.query(sql, [id])
+    res.status(200).json({"Sucesso": "Usuário excluído com sucesso."})
+  }catch(err){
+    res.status(500).json({erro: 'Erro interno no servidor'})
+  }
+})
+
+app.delete('/agendamento/:id', (req, res) => {
+  const {id} = req.params
+  try{
+    const sql = 'DELETE FROM agendamento WHERE id = ?'
+    connection.query(sql, [id])
+    res.status(200).json({"Sucesso": "Agendamento excluído com sucesso."})
+  }catch(err){
+    res.status(500).json({erro: 'Erro interno no servidor'})
+  }
+})
+
+app.get('/agendamento/:id', (req, res) => {
+  const {id} = req.params
+  try{
+    const sql = 'SELECT * FROM agendamento WHERE id = ?'
+     connection.query(sql, [id], (err, result) => {
+        res.status(200).json(result)
+    })
+  }catch(err){
+    res.status(500).json({erro: 'Erro interno no servidor'})
+  }
+})
+
+app.post('/autenticar', (req, res) => {
+  try{
+  const { email, senha, tipo } = req.body
+  if(!email || !senha){
+    return res.status(400).json({erro: "Preencha todos os campos."})
+  }
+  const sql = `SELECT email FROM ${tipo} WHERE email = ? AND senha = ?`
+  connection.query(sql, [email, senha], (err, result) => {
+    console.log(result[0])
+    if(result[0] == undefined){
+      return res.status(404).json({"Erro": "Credenciais incorretas"})
+    }
+    if(result[0] =! ""){
+      return res.status(200).json({"Sucesso": "Sucesso ao realizar login"})
+    }
+    })
+  }
+  catch(err){
+    res.status(400).json({erro: 'Preencha todos os dados'})
+  }
+
+})
 
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`)
